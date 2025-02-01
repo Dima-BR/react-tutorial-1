@@ -1,13 +1,17 @@
-import React from "react";
+// import React from "react";
+import { counterContext } from './../../contexts/counterContext';
+import { useContext } from 'react';
 
 export default function Footer() {
+    const {counter} = useContext(counterContext);
+  
   return (
     <>
       <footer className="bg-white dark:bg-gray-900">
         <div className="mx-auto max-w-screen-xl space-y-8 px-4 py-16 sm:px-6 lg:space-y-16 lg:px-8">
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
             <div>
-              <div className="text-teal-600 dark:text-teal-300">
+              <div className="flex text-teal-600 dark:text-teal-300">
                 <svg
                   className="h-8"
                   viewBox="0 0 118 24"
@@ -55,6 +59,7 @@ export default function Footer() {
                     fill="currentColor"
                   />
                 </svg>
+                <span className='font-extrabold'>{counter}</span>
               </div>
               <p className="mt-4 max-w-xs text-gray-500 dark:text-gray-400">
                 Lorem ipsum dolor, sit amet consectetur adipisicing elit. Esse

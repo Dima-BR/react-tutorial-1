@@ -10,6 +10,8 @@ import {
   Button,
 } from "@heroui/react";
 import { NavLink } from "react-router-dom";
+import { counterContext } from './../../contexts/counterContext';
+import { useContext } from 'react';
 
 export const AcmeLogo = () => {
   return (
@@ -25,6 +27,7 @@ export const AcmeLogo = () => {
 };
 export default function NavbarComponent() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const {counter} = useContext(counterContext);
 
   const menuItems = [
     "Products",
@@ -49,7 +52,7 @@ export default function NavbarComponent() {
           <NavbarBrand>
             <AcmeLogo />
             <NavLink to="/"> 
-            <p className="font-bold text-inherit">ACME</p>
+            <p className="font-bold text-inherit">ACME <span className="text-green-700">{counter}</span></p>
             </NavLink>
           </NavbarBrand>
         </NavbarContent>
