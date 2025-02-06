@@ -9,9 +9,10 @@ import {
   NavbarItem,
   Button,
 } from "@heroui/react";
-import { NavLink } from "react-router-dom";
-import { counterContext } from './../../contexts/counterContext';
-import { useContext } from 'react';
+import { NavLink, useNavigate } from "react-router-dom";
+import { counterContext } from "./../../contexts/counterContext";
+import { useContext } from "react";
+import { authContext } from "./../../contexts/authContext";
 
 export const AcmeLogo = () => {
   return (
@@ -27,14 +28,18 @@ export const AcmeLogo = () => {
 };
 export default function NavbarComponent() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-  const {counter} = useContext(counterContext);
+  const { counter } = useContext(counterContext);
+  const { isLoggedIn, setisLoggedIn } = useContext(authContext);
+  const navigate = useNavigate();
 
-  const menuItems = [
-    "Products",
-    "Categories",
-    "Servises",
-    "My Settings",
-  ];
+  const menuItems = ["Products", "Categories", "Servises", "My Settings"];
+
+  function logOut(){
+    // login False 
+    setisLoggedIn(false)
+    localStorage.removeItem('token')
+    navigate('/login')
+  }
   return (
     <>
       <Navbar
@@ -51,41 +56,57 @@ export default function NavbarComponent() {
         <NavbarContent className="pr-3  sm:flex" justify="start">
           <NavbarBrand>
             <AcmeLogo />
-            <NavLink to="/"> 
-            <p className="font-bold text-inherit">ACME <span className="text-green-700">{counter}</span></p>
+            <NavLink to="/">
+              <p className="font-bold text-inherit">
+                ACME <span className="text-green-700">{counter}</span>
+              </p>
             </NavLink>
           </NavbarBrand>
         </NavbarContent>
 
-       
-        
         <NavbarContent className="hidden sm:flex gap-4" justify="center">
-          
-          {menuItems.map((item, index) => (
-            <NavbarItem key={index}>
-            <NavLink color="foreground" to={item === "Home" ? "/" : `/${item.toLowerCase()}`} >
-              {item}
-            </NavLink>
-          </NavbarItem>
-          ))}
+          {isLoggedIn &&
+            menuItems.map((item, index) => (
+              <NavbarItem key={index}>
+                <NavLink
+                  color="foreground"
+                  to={item === "Home" ? "/" : `/${item.toLowerCase()}`}
+                >
+                  {item}
+                </NavLink>
+              </NavbarItem>
+            ))}
         </NavbarContent>
 
-
         <NavbarContent justify="end">
-          <NavbarItem className="hidden lg:flex">
-            <NavLink to="/login">Login</NavLink>
-          </NavbarItem>
-          <NavbarItem>
-            <Button  color="warning" variant="flat">
-              <NavLink to="/register"> Sign Up</NavLink>
-             
-            </Button>
-          </NavbarItem>
+          {isLoggedIn ? (
+            <>
+              <NavbarItem>
+                <Button color="danger" variant="flat" onPress={logOut}>
+                  <NavLink to="/login"> Sign Out</NavLink>
+                </Button>
+              </NavbarItem>
+            </>
+          ) : (
+            <>
+              <NavbarItem className="hidden lg:flex">
+                <NavLink to="/login">Login</NavLink>
+              </NavbarItem>
+              <NavbarItem>
+                <Button color="warning" variant="flat">
+                  <NavLink to="/register"> Sign Up</NavLink>
+                </Button>
+              </NavbarItem>
+            </>
+          )}
         </NavbarContent>
 
         <NavbarMenu>
           {menuItems.map((item, index) => (
-            <NavbarMenuItem key={`${item}-${index}`} onClick={() => setIsMenuOpen(false)}>
+            <NavbarMenuItem
+              key={`${item}-${index}`}
+              onClick={() => setIsMenuOpen(false)}
+            >
               <NavLink
                 className="w-full"
                 color={

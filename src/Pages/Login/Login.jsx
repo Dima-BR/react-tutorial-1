@@ -1,14 +1,16 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Input, Button } from "@heroui/react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { authContext } from './../../contexts/authContext';
 
 export default function Login() {
   const [isLoading, setIsLoading] = React.useState(false);
   const [errMsg, setErrMsg] = React.useState('');
   const navigate = useNavigate();
+  const {setisLoggedIn} = useContext(authContext);
 
   const initialValues = {
     email: "",
@@ -23,6 +25,9 @@ export default function Login() {
     .then(({data})=>{
       // navigate to Home page
         if(data.message == 'success'){
+          console.log('data for token',data);
+          setisLoggedIn(true);
+          localStorage.setItem('token', data.token)
           navigate("/")
         }
 
@@ -51,7 +56,7 @@ export default function Login() {
   return (
     <>
       <div className="sm:w-2/3 mx-auto py-10">
-        <h1 className="text-3xl font-bold text-center my-10">Register Now</h1>
+        <h1 className="text-3xl font-bold text-center my-10">Login Now </h1>
 
         <form action="" className="" onSubmit={handleSubmit}>
           <div className="grid md:grid-cols-2 gap-6 w-3/4 mx-auto">
