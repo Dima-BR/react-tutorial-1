@@ -8,9 +8,12 @@ import Login from "./Pages/Login/Login";
 import Register from "./Pages/Register/Register";
 import NotFound from "./Pages/NotFound/NotFound";
 // import Categories from "./Pages/Categories/Categories";
-// import Brand from "./Pages/Brand/Brand";
-// import Cart from "./Pages/Cart/Cart";
-import CounterContextProvider from './contexts/counterContext';
+import Brand from "./Pages/Brand/Brand";
+import Cart from "./Pages/Cart/Cart";
+import CounterContextProvider from "./contexts/counterContext";
+import AuthContextProvider from "./contexts/authContext";
+import ProtectedRoutes from "./ProtectedRoutes/ProtectedRoutes";
+import ProtectedAuthRoute from "./ProtectedRoutes/ProtectedAuthRoute";
 
 function App() {
   const router = createBrowserRouter([
@@ -18,18 +21,22 @@ function App() {
       path: "",
       element: <MainLayout />,
       children: [
-        { index: true, element: <HomePage /> },
-        { path: "login", element: <Login /> },
-        { path: "register", element: <Register /> },
+        { index: true, element: <ProtectedRoutes> <HomePage /></ProtectedRoutes> },
+        { path: "login", element: <ProtectedAuthRoute><Login /></ProtectedAuthRoute> },
+        { path: "register", element: <ProtectedAuthRoute><Register /></ProtectedAuthRoute> },
+        { path: "brand", element: <ProtectedRoutes><Brand /></ProtectedRoutes> },
+        { path: "cart", element: <ProtectedRoutes><Cart /></ProtectedRoutes> },
         { path: "*", element: <NotFound /> },
       ],
     },
   ]);
   return (
     <>
-      <CounterContextProvider>
-        <RouterProvider router={router}> </RouterProvider>
-      </CounterContextProvider>
+      <AuthContextProvider>
+        <CounterContextProvider>
+          <RouterProvider router={router}> </RouterProvider>
+        </CounterContextProvider>
+      </AuthContextProvider>
     </>
   );
 }
