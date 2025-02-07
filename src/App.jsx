@@ -16,6 +16,7 @@ import ProtectedRoutes from "./ProtectedRoutes/ProtectedRoutes";
 import ProtectedAuthRoute from "./ProtectedRoutes/ProtectedAuthRoute";
 import Products from "./Pages/Products/Products";
 import ProductDetails from "./Pages/ProductDetails/ProductDetails";
+import { ToastContainer, toast } from 'react-toastify';
 
 function App() {
   const router = createBrowserRouter([
@@ -39,6 +40,7 @@ function App() {
       <AuthContextProvider>
         <CounterContextProvider>
           <RouterProvider router={router}> </RouterProvider>
+          <ToastContainer />
         </CounterContextProvider>
       </AuthContextProvider>
     </>

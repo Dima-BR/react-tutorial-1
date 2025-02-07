@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import Loading from "../../Components/Loading/Loading";
 import Slider from "react-slick";
 
+
 export default function ProductDetails() {
   const [product, setProduct] = useState(null);
   const [isLoading, setIsLoading] = useState(true);

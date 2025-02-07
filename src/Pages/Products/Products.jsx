@@ -2,10 +2,14 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Loading from "../../Components/Loading/Loading";
 import { Link } from "react-router-dom";
+import { Button } from "@heroui/react";
+import { Slide, toast } from "react-toastify";
 
 export default function Products() {
   const [products, setProducts] = React.useState([]);
   const [isLoading, setisLoading] = useState(true);
+  const [isLoadingbtn, setisLoadingbtn] = useState(false);
+
   useEffect(() => {
     getAllProducts();
   }, []);
@@ -19,6 +23,40 @@ export default function Products() {
     setProducts(data.data);
     setisLoading(false);
   }
+
+  async function addToCart(productId) {
+    setisLoadingbtn(true);
+    const { data } = await axios.post(
+      "https://ecommerce.routemisr.com/api/v1/cart",
+      {
+        productId,
+      },
+      {
+        headers: {
+          token: localStorage.getItem("token"),
+        },
+      }
+    );
+
+    console.log("data product cart", data);
+    
+
+    if (data.status == "success") {
+      toast.success(data.message, {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Slide,
+      });
+    }
+    setisLoadingbtn(false);
+  }
+
   if (isLoading) {
     return (
       <>
@@ -44,15 +82,16 @@ export default function Products() {
                   alt={product.title}
                 />
                 <div className="absolute top-0 left-0   flex justify-start align-top gap-2">
-                 { product?.priceAfterDiscount && <span className=" rounded-md py-1 bg-red-500 px-2 text-center text-sm font-medium text-white">
-                    {/* {product.brand.name} */}
-                    {100 -
-                      Math.round(
-                        product?.priceAfterDiscount * 100 / product?.price
-                      )}
-                    %off
-                  </span>
-}
+                  {product?.priceAfterDiscount && (
+                    <span className=" rounded-md py-1 bg-red-500 px-2 text-center text-sm font-medium text-white">
+                      {/* {product.brand.name} */}
+                      {100 -
+                        Math.round(
+                          (product?.priceAfterDiscount * 100) / product?.price
+                        )}
+                      %off
+                    </span>
+                  )}
                   {/* <span className="rounded-md py-1 bg-red-500 px-2 text-center text-sm font-medium text-white">
                     sale
                   </span> */}
@@ -115,10 +154,14 @@ export default function Products() {
                   </div>
                 </div>
                 {/* Button */}
-                <a
+                <Button
                   href="#"
                   className="flex items-center justify-center rounded-md bg-slate-900 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-blue-300"
+                  onPress={() => addToCart(product._id)}
+                  isLoading={isLoadingbtn}
+                 
                 >
+                    {/*  isLoading={isLoadingbtn} */}
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="mr-2 h-6 w-6"
@@ -133,8 +176,8 @@ export default function Products() {
                       d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
                     />
                   </svg>
-                  Add to cart
-                </a>
+                  Add to cart 
+                </Button>
               </div>
             </div>
           </div>
