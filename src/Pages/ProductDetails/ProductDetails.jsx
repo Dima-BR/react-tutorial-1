@@ -3,11 +3,13 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Loading from "../../Components/Loading/Loading";
 import Slider from "react-slick";
-
+import { Button } from "@heroui/react";
+import { addToCart } from "../../Services/CartServices";
 
 export default function ProductDetails() {
   const [product, setProduct] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingBtn, setIsLoadingBtn] = useState(false);
   const { id } = useParams();
 
   useEffect(() => {
@@ -49,7 +51,14 @@ export default function ProductDetails() {
             /> */}
             <Slider {...settings}>
               {product.images.map((imgSrc) => {
-                return <img key={imgSrc} src={imgSrc} alt={product.title} className="w-full h-auto rounded-lg shadow-md mb-4"/>;
+                return (
+                  <img
+                    key={imgSrc}
+                    src={imgSrc}
+                    alt={product.title}
+                    className="w-full h-auto rounded-lg shadow-md mb-4"
+                  />
+                );
               })}
             </Slider>
           </div>
@@ -69,7 +78,7 @@ export default function ProductDetails() {
                   </span>
                 </>
               ) : (
-                <span className="text-gray-500 line-through">
+                <span className="text-2xl font-bold mr-2">
                   {product?.price}JOD
                 </span>
               )}
@@ -115,7 +124,11 @@ export default function ProductDetails() {
             <p className="text-gray-700 mb-6">{product?.description}</p>
 
             <div className="flex space-x-4 mb-6">
-              <button className="bg-indigo-600 flex gap-2 items-center text-white px-6 py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+              <Button
+                isLoading={isLoadingBtn}
+                onPress={() => addToCart(product?._id, setIsLoadingBtn)}
+                className="bg-indigo-600 flex gap-2 items-center text-white px-6 py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -131,8 +144,9 @@ export default function ProductDetails() {
                   />
                 </svg>
                 Add to Cart
-              </button>
-              <button className="bg-gray-200 flex gap-2 items-center  text-gray-800 px-6 py-2 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
+              </Button>
+             
+              <Button className="bg-gray-200 flex gap-2 items-center  text-gray-800 px-6 py-2 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -148,7 +162,7 @@ export default function ProductDetails() {
                   />
                 </svg>
                 Wishlist
-              </button>
+              </Button>
             </div>
           </div>
         </div>
