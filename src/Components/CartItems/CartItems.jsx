@@ -1,10 +1,18 @@
 import { Button } from "@heroui/react";
+import { useEffect } from "react";
 // import axios from "axios";
-import  { useState } from "react";
+import { useState } from "react";
 
-export default function CartItems({ product, removeFromCart }) {
+export default function CartItems({ product, removeFromCart, updateCart }) {
   console.log("product cart item", product);
   const [isLoading, setisLoading] = useState(false);
+  const [incrementIsLoading, setincrementIsLoading] = useState(false);
+  const [decrementIsLoading, setdecrementIsLoading] = useState(false);
+  const [productCount, setproductCount] = useState(product.count);
+
+  useEffect(() => {
+    setproductCount(product.count);
+  }, [product.count]);
 
   return (
     <>
@@ -13,7 +21,6 @@ export default function CartItems({ product, removeFromCart }) {
           className="bg-transparent"
           isLoading={isLoading}
           onPress={() => removeFromCart(product.product._id, setisLoading)}
-          isLoading={isLoading}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -56,74 +63,79 @@ export default function CartItems({ product, removeFromCart }) {
             </div>
           </div>
           <div className="flex items-center max-[500px]:justify-center h-full max-md:mt-3">
-            <div className="flex items-center h-full">
-              <button className="group rounded-l-xl px-5 py-[18px] border border-gray-200 flex items-center justify-center shadow-sm shadow-transparent transition-all duration-500 hover:bg-gray-50 hover:border-gray-300 hover:shadow-gray-300 focus-within:outline-gray-300">
+            <div className="flex items-center gap-0.5">
+              {/* Decrease Button */}
+              <Button
+                onPress={() =>
+                  updateCart(
+                    product.product._id,
+                    product.count - 1,
+                    setincrementIsLoading,
+                    setdecrementIsLoading,
+                    product.count
+                  )
+                }
+                isLoading={decrementIsLoading}
+                className="w-7 h-7 border border-gray-300 bg-white flex items-center justify-center rounded-md hover:bg-gray-100 transition-all"
+              >
                 <svg
-                  className="stroke-gray-900 transition-all duration-500 group-hover:stroke-black"
+                  className="stroke-gray-900 transition-all duration-300 group-hover:stroke-black"
                   xmlns="http://www.w3.org/2000/svg"
-                  width={22}
-                  height={22}
+                  width={14}
+                  height={14}
                   viewBox="0 0 22 22"
                   fill="none"
                 >
                   <path
                     d="M16.5 11H5.5"
-                    stroke
-                    strokeWidth="1.6"
-                    strokeLinecap="round"
-                  />
-                  <path
-                    d="M16.5 11H5.5"
-                    stroke
-                    strokeOpacity="0.2"
-                    strokeWidth="1.6"
-                    strokeLinecap="round"
-                  />
-                  <path
-                    d="M16.5 11H5.5"
-                    stroke
-                    strokeOpacity="0.2"
+                    stroke="currentColor"
                     strokeWidth="1.6"
                     strokeLinecap="round"
                   />
                 </svg>
-              </button>
+              </Button>
+
+              {/* Quantity Input */}
               <input
                 type="text"
-                className="border-y border-gray-200 outline-none text-gray-900 font-semibold text-lg w-full max-w-[73px] min-w-[60px] placeholder:text-gray-900 py-[15px]  text-center bg-transparent"
-                placeholder={product.count}
+                className="border border-gray-300 text-gray-900 font-semibold text-xs w-8 h-7 text-center rounded-md outline-none bg-white"
+                value={productCount}
+                min={1}
+                onChange={(e) => setproductCount(e.target.value)}
+                onBlur={(e) => updateCart(product.product._id, e.target.value, setincrementIsLoading, setdecrementIsLoading, product.count)}
+
               />
-              <button className="group rounded-r-xl px-5 py-[18px] border border-gray-200 flex items-center justify-center shadow-sm shadow-transparent transition-all duration-500 hover:bg-gray-50 hover:border-gray-300 hover:shadow-gray-300 focus-within:outline-gray-300">
+
+              {/* Increase Button */}
+              <Button
+                onPress={() =>
+                  updateCart(
+                    product.product._id,
+                    product.count + 1,
+                    setincrementIsLoading,
+                    setdecrementIsLoading,
+                    product.count
+                  )
+                }
+                isLoading={incrementIsLoading}
+                className="w-7 h-7 border border-gray-300 bg-white flex items-center justify-center rounded-md hover:bg-gray-100 transition-all"
+              >
                 <svg
-                  className="stroke-gray-900 transition-all duration-500 group-hover:stroke-black"
+                  className="stroke-gray-900 transition-all duration-300 group-hover:stroke-black"
                   xmlns="http://www.w3.org/2000/svg"
-                  width={22}
-                  height={22}
+                  width={14}
+                  height={14}
                   viewBox="0 0 22 22"
                   fill="none"
                 >
                   <path
                     d="M11 5.5V16.5M16.5 11H5.5"
-                    stroke
-                    strokeWidth="1.6"
-                    strokeLinecap="round"
-                  />
-                  <path
-                    d="M11 5.5V16.5M16.5 11H5.5"
-                    stroke
-                    strokeOpacity="0.2"
-                    strokeWidth="1.6"
-                    strokeLinecap="round"
-                  />
-                  <path
-                    d="M11 5.5V16.5M16.5 11H5.5"
-                    stroke
-                    strokeOpacity="0.2"
+                    stroke="currentColor"
                     strokeWidth="1.6"
                     strokeLinecap="round"
                   />
                 </svg>
-              </button>
+              </Button>
             </div>
           </div>
           <div className="flex items-center max-[500px]:justify-center md:justify-end max-md:mt-3 h-full">

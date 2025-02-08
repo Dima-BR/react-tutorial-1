@@ -10,7 +10,7 @@ export default function Cart() {
   const [cartId, setCartId] = useState(null);
   const [numberOfCartItems, setNumberOfCartItems] = useState(0);
   const [cartData, setCartData] = useState(null);
-  const [loadingCartEmpty, setLoadingCartEmpty] = useState(false)
+  const [loadingCartEmpty, setLoadingCartEmpty] = useState(false);
 
   useEffect(() => {
     getCartItems();
@@ -26,7 +26,7 @@ export default function Cart() {
         },
       }
     );
-    console.log("Cart data", data);
+    // console.log("Cart data", data);
     setCartId(data.cartId);
     setNumberOfCartItems(data.numOfCartItems);
     setCartData(data.data);
@@ -44,7 +44,7 @@ export default function Cart() {
       }
     );
 
-    console.log("data", data);
+    // console.log("data", data);
     setCartData(data.data);
     setCartId(data.cartId);
     setNumberOfCartItems(data.numOfCartItems);
@@ -61,11 +61,34 @@ export default function Cart() {
         },
       }
     );
-    console.log("data", data);
+    // console.log("data", data);
     setLoadingCartEmpty(false);
     setCartData(null);
     setCartId(null);
     setNumberOfCartItems(0);
+  }
+
+  async function updateCart(productId, count, setincrementIsLoading, setdecrementIsLoading, currentCount) {
+    if(count > currentCount) setincrementIsLoading(true);
+    if(count < currentCount) setdecrementIsLoading(true);
+
+    const { data } = await axios.put(
+      "https://ecommerce.routemisr.com/api/v1/cart/" + productId,
+      {
+        count,
+      },
+      {
+        headers: {
+          token: localStorage.getItem("token"),
+        },
+      }
+    );
+    console.log("data update", data);
+    setincrementIsLoading(false);
+    setdecrementIsLoading(false);
+    setCartData(data.data);
+    setCartId(data.cartId);
+    setNumberOfCartItems(data.numOfCartItems);
   }
 
   if (numberOfCartItems == 0 && !isLoading) {
@@ -124,7 +147,7 @@ export default function Cart() {
   }
 
   if (isLoading) {
-    <Loading />
+    <Loading />;
   }
 
   return (
@@ -179,6 +202,7 @@ export default function Cart() {
                   key={index}
                   product={product}
                   removeFromCart={removeFromCart}
+                  updateCart={updateCart}
                 />
               ))}
 
