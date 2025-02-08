@@ -32,7 +32,7 @@ export default function NavbarComponent() {
   const { isLoggedIn, setisLoggedIn } = useContext(authContext);
   const navigate = useNavigate();
 
-  const menuItems = ["Products", "Categories", "Servises", "My Settings"];
+  const menuItems = ["Products", "Categories", "Cart", "My Settings"];
 
   function logOut(){
     // login False 
